@@ -1,7 +1,9 @@
 package vn.demo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vn.demo.dto.response.ResponseUserDetail;
 import vn.demo.model.User;
@@ -15,7 +17,7 @@ public class UserController {
 
     @Operation(summary = "Create new user", description = "API for insert user into databases")
     @PostMapping("/add")
-    public String addUser(@RequestBody User user) {
+    public String addUser(@Valid @RequestBody User user) {
         return "User added";
     }
 
