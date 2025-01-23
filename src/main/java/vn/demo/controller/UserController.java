@@ -3,9 +3,11 @@ package vn.demo.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import vn.demo.dto.response.ResponseUserDetail;
+import vn.demo.dto.response.ResponseData;
+import vn.demo.dto.response.ResponseError;
+import vn.demo.dto.response.user.ResponseUserDetail;
 import vn.demo.model.User;
 
 import java.util.List;
@@ -17,42 +19,71 @@ public class UserController {
 
     @Operation(summary = "Create new user", description = "API for insert user into databases")
     @PostMapping("/add")
-    public String addUser(@Valid @RequestBody User user) {
-        return "User added";
+    public ResponseData<?> addUser(@Valid @RequestBody User user) {
+        log.info("Request create user={}", user.getId());
+        try {
+            return new ResponseData<>(HttpStatus.CREATED.value(), "user added successfully", 1);
+        } catch (Exception e) {
+            log.error("errorMessage= {} ", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Add user failed");
+        }
     }
 
 
     @Operation(summary = "Update user", description = "API for update user into databases")
     @PutMapping("/update")
-    public String updateUser( @RequestBody User user) {
+    public ResponseData<?> updateUser(@RequestBody User user) {
         log.info("Request update user={}", user.getId());
-        return "User updated";
+        try {
+            return new ResponseData<>(HttpStatus.ACCEPTED.value(), "user update successfully");
+        } catch (Exception e) {
+            log.error("errorMessage= {} ", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Add user failed");
+        }
     }
 
 
     @Operation(summary = "Delete user", description = "API for delete user into databases")
     @DeleteMapping("/delete/{userId}")
-    public String deleteUser(@PathVariable("userId") long userId) {
+    public ResponseData<?> deleteUser(@PathVariable("userId") long userId) {
         log.info("Request delete user={}", userId);
-        return "User deleted";
+
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(), "user delete successfully");
+        } catch (Exception e) {
+            log.error("errorMessage= {} ", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Add user failed");
+        }
     }
 
 
     @Operation(summary = "Get detail user", description = "API for get user by id into databases")
     @GetMapping("/{userId}")
-    public ResponseUserDetail getUserById(@PathVariable("userId") long userId) {
+    public ResponseData<ResponseUserDetail> getUserById(@PathVariable("userId") long userId) {
         log.info("Request detail user={}", userId);
-        return new ResponseUserDetail("Nhan", "Mai", "09/01/2024","MALE" , "1234567894", "MaiVanNhan",
-                "123456","Quang Nam","Vietnames");
+
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(), "user detail successfully", new ResponseUserDetail("Nhan", "Mai", "09/01/2024", "MALE", "1234567894", "MaiVanNhan",
+                    "123456", "Quang Nam", "Vietnames"));
+        } catch (Exception e) {
+            log.error("errorMessage= {} ", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Add user failed");
+        }
     }
 
     @Operation(summary = "Get list user", description = "API for get list user into databases")
     @GetMapping("/list")
-    public List<ResponseUserDetail> getListUsers() {
+    public ResponseData<List<ResponseUserDetail>> getListUsers() {
         log.info("Request list user={}");
-        return List.of(new ResponseUserDetail("Nhan", "Mai", "09/01/2024","MALE" , "1234567894", "MaiVanNhan",
-                "123456","Quang Nam","Vietnames"),
-                new ResponseUserDetail("Hanh", "Nguyen", "09/01/2024","MALE" , "1234567894", "MaiVanNhan",
-                        "123456","Quang Nam","Vietnames")) ;
+
+        try {
+            return new ResponseData<>(HttpStatus.OK.value(), "get list users successfully", List.of(new ResponseUserDetail("Nhan", "Mai", "09/01/2024", "MALE", "1234567894", "MaiVanNhan",
+                            "123456", "Quang Nam", "Vietnames"),
+                    new ResponseUserDetail("Hanh", "Nguyen", "09/01/2024", "MALE", "1234567894", "MaiVanNhan",
+                            "123456", "Quang Nam", "Vietnames")));
+        } catch (Exception e) {
+            log.error("errorMessage= {} ", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Add user failed");
+        }
     }
 }
