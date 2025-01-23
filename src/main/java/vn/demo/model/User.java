@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import vn.demo.util.EnumValue;
+import vn.demo.util.GenderEnum;
 import vn.demo.util.PhoneNumber;
 
 import java.io.Serializable;
@@ -29,7 +31,8 @@ public class User implements Serializable {
     private String dateOfBirth;
 
     @NotNull(message = "gender must be not null")
-    private String  gender;
+    @EnumValue(name = "gender", enumClass = GenderEnum.class)
+    private GenderEnum gender;
 
     @PhoneNumber
     private String phone;
